@@ -1,0 +1,84 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Tweet;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+
+class BookmarkController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        $user = auth()->user();
+
+        // Get tweets that this user has saved
+        $savedTweets = $user->saves()
+            ->with('user')
+            ->get()
+            ->sortByDesc('created_at');
+
+        $savedTweets = $savedTweets->map(function ($tweet) use ($user) {
+            $tweet->retweeted = $tweet->isRetweetedBy($user->id);
+            $tweet->saved = $tweet->isSavedBy($user->id);
+            $tweet->liked = $tweet->isLikedBy($user->id);
+            return $tweet;
+        });
+
+
+        return Inertia::render('Bookmarks', [
+            'tweets' => $savedTweets
+        ]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        //
+    }
+}
